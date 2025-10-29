@@ -1,0 +1,148 @@
+weights:
+  vector: 0.35          # семантическая близость
+  skills: 0.25          # покрытие навыков
+  experience: 0.15      # соответствие по опыту
+  domain: 0.15          # совпадение доменной области
+  level: 0.10           # соответствие по грейду
+
+rules:
+  enforce_must_have: true        # если нет обязательных навыков → штраф/фильтр
+  allow_overqualified: true       # разрешать кандидатов выше уровня
+  filter_by_level_order: false    # отключено: можно включить как строгий фильтр по грейду
+  min_experience_years: 1         # минимальный стаж
+  partial_match_for_subskills: true
+
+penalties:
+  missing_must_have: 0.6          # если отсутствует must-have → умножаем скор
+  domain_mismatch: 0.8
+  level_mismatch: 0.85
+  low_skill_coverage: 0.7         # если навыков <50%
+
+bonuses:
+  full_match_subskills: 0.05      # если совпали все фреймворки
+  recent_relevant: 0.07           # если недавно работал в похожей доменной области
+  high_experience: 0.05           # больше, чем требуется
+
+levels_order:
+  - junior
+  - middle
+  - senior
+  - lead
+  - principal
+
+specializations:
+  - backend
+  - frontend
+  - fullstack
+  - data
+  - mobile
+  - qa
+  - devops
+  - 1c
+
+aliases:
+  levels:
+    jr: junior
+    jun: junior
+    джуниор: junior
+    middle: middle
+    mid: middle
+    мидл: middle
+    sr: senior
+    snr: senior
+    sеnior: senior
+    senior: senior
+    сеньор: senior
+  skills:
+    py: python
+    питон: python
+    python3: python
+    postgres: postgresql
+    pgsql: postgresql
+    pg: postgresql
+    ts: typescript
+    js: javascript
+    tf: tensorflow
+    torch: pytorch
+    scikit: scikit-learn
+    sklearn: scikit-learn
+    reactjs: react
+    nextjs: next.js
+    docker-compose: docker
+    1с: 1c
+    1 c: 1c
+    c++: cpp
+    c# : csharp
+  subskills:
+    redux-toolkit: redux
+    transformer: transformers
+    celery: celery
+    kafka: kafka
+    ut: 1c_ut
+    зуп: 1c_zup
+    бух: 1c_buh
+  domains:
+    ecommerce: retail
+    e-commerce: retail
+    ecomm: retail
+    ритейл: retail
+    banking: fintech
+    финтех: fintech
+    insuretech: fintech
+    med: healthcare
+    медицина: healthcare
+    медтех: healthcare
+
+skill_hierarchy:
+  python:
+    - django
+    - fastapi
+    - numpy
+    - pandas
+    - pytorch
+    - tensorflow
+    - airflow
+    - mlflow
+  javascript:
+    - react
+    - next.js
+    - redux
+    - nodejs
+  typescript:
+    - react
+    - next.js
+    - redux
+    - nodejs
+  sql:
+    - postgresql
+    - mysql
+    - mssql
+    - sqlite
+  1c:
+    - 1c_ut
+    - 1c_zup
+    - 1c_buh
+
+domain_similarity:
+  retail:
+    - ecommerce
+    - marketplace
+  fintech:
+    - banking
+    - payments
+    - ecommerce
+  healthcare:
+    - pharma
+    - medtech
+
+localization:
+  labels:
+    vector: "Семантическое сходство"
+    skills: "Покрытие навыков"
+    experience: "Опыт"
+    domain: "Доменная область"
+    level: "Уровень"
+  messages:
+    missing_skills: "Отсутствуют обязательные навыки"
+    domain_match: "Опыт в нужной доменной области"
+    level_match: "Соответствие уровню вакансии"

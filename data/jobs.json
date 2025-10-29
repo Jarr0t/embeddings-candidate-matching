@@ -1,0 +1,47 @@
+[
+  {
+    "id": 1,
+    "title": "Senior Backend Python Developer",
+    "level_required": "senior",
+    "specialization": "backend",
+    "domain": "fintech",
+    "stack": ["python", "postgresql", "docker"],
+    "substack": ["django", "fastapi"],
+    "must_have": ["python", "django"],
+    "nice_to_have": ["kubernetes", "graphql"],
+    "exp_min_years_by_area": { "backend": 3 },
+    "location": "remote",
+    "salary_max": 3500,
+    "source_text": "Требуется Senior Backend Python Developer. Опыт коммерческой разработки от 3 лет. Обязателен опыт с Django. Финтех домен. Работа полностью удаленно."
+  },
+  {
+    "id": 2,
+    "title": "Middle+ Frontend React Developer",
+    "level_required": "middle",
+    "specialization": "frontend",
+    "domain": "e-commerce",
+    "stack": ["javascript", "react"],
+    "substack": ["redux", "nextjs"],
+    "must_have": ["react"],
+    "nice_to_have": ["typescript", "jest", "storybook"],
+    "exp_min_years_by_area": { "frontend": 2 },
+    "location": "remote/Europe timezones",
+    "salary_max": 2500,
+    "source_text": "Нужен Middle Frontend React Developer для e-commerce проекта. Опыт от 2 лет. React обязателен, Redux или Next.js — плюс."
+  },
+  {
+    "id": 3,
+    "title": "Senior iOS Developer",
+    "level_required": "senior",
+    "specialization": "mobile",
+    "domain": "banking",
+    "stack": ["swift"],
+    "substack": ["xcode", "mvvm"],
+    "must_have": ["swift", "xcode"],
+    "nice_to_have": ["fastlane", "ci/cd"],
+    "exp_min_years_by_area": { "mobile": 4 },
+    "location": "RUS/BEL/KZ/AM",
+    "salary_max": 2800,
+    "source_text": "Ищем Senior iOS разработчика в банковский проект. Опыт 4+ года, обязательны Swift и Xcode. MVVM, кастомные UI, понимание клиент-серверного взаимодействия."
+  }
+]
