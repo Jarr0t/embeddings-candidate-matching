@@ -201,7 +201,7 @@ def job_embedding(job: Job):
 
 # === финальный ранкинг ===
 
-def rank(job_id: int, top_n=3, custom_weights=None):
+def rank(job_id: int, top_n=3, custom_weights=None, threshold=None):
     weights = custom_weights or CONFIG["weights"]
     candidates, jobs, vectors, index, id_map = load_all()
 
@@ -268,6 +268,10 @@ def rank(job_id: int, top_n=3, custom_weights=None):
         })
 
     results = sorted(results, key=lambda x: x["final_score"], reverse=True)
+
+    if threshold is not None:
+        results = [r for r in results if r["final_score"] >= threshold]
+
     return results[:top_n]
 
 
