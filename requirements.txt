@@ -1,0 +1,7 @@
+numpy
+faiss
+yaml
+openai
+dotenv
+pydantic
+streamlit
