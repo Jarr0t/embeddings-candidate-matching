@@ -26,31 +26,35 @@ class Job(BaseModel):
     source_text: Optional[str] = None
 
 
-def parse_job(job_text: str) -> Job:
-    prompt = f"""
-Ты — бот, который структурирует данные вакансии. 
-Верни строго JSON формата schema. Никаких комментариев.
+def parse_job(text: str) -> Job:
+    schema = {
+        "name": "Job",
+        "schema": Job.model_json_schema()
+    }
 
-Вакансия:
-\"\"\"{job_text}\"\"\"
-"""
-
-    response = client.chat.completions.create(
+    resp = client.chat.completions.create(
         model="gpt-5-mini",
-        messages=[{"role": "user", "content": prompt}],
-        response_format={
-            "type": "json_schema",
-            "json_schema": {
-                "name": "JobSchema",
-                "schema": Job.model_json_schema()
-            }
-        }
+        messages=[{"role": "user", "content": f"Extract structured job data:\n{text}"}],
+        response_format={"type": "json_schema", "json_schema": schema}
     )
 
-    raw_json = response.choices[0].message.content
-    parsed_job: Job = Job.model_validate_json(raw_json)
-    parsed_job.source_text = job_text
-    return parsed_job
+    msg = resp.choices[0].message
+
+    if hasattr(msg, "parsed") and msg.parsed:
+        return Job.model_validate(msg.parsed)
+
+    raw = msg.content
+    try:
+        data = json.loads(raw)
+    except:
+        import re
+        json_match = re.search(r"\{.*\}", raw, re.S)
+        if not json_match:
+            raise ValueError("LLM did not return JSON.")
+        data = json.loads(json_match.group(0))
+
+    return Job.model_validate(data)
+
 
 
 

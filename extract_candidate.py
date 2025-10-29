@@ -46,30 +46,39 @@ class Candidate(BaseModel):
     id: Optional[int] = None
 
 
-def parse_candidate(candidate_text: str) -> Candidate:
-    prompt = f"""
-Ты — бот, который структурирует данные о кандидате на основе текста резюме.
-Выход строго соответствует JSON Schema. Никаких комментариев, только JSON.
+def parse_candidate(text: str) -> Candidate:
+    schema = {
+        "name": "Candidate",
+        "schema": Candidate.model_json_schema()
+    }
 
-Резюме:
-\"\"\"{candidate_text}\"\"\"
-"""
-
-    response = client.chat.completions.create(
+    resp = client.chat.completions.create(
         model="gpt-5-mini",
-        messages=[{"role": "user", "content": prompt}],
-        response_format={
-            "type": "json_schema",
-            "json_schema": {
-                "name": "CandidateSchema",
-                "schema": Candidate.model_json_schema()
-            }
-        }
+        messages=[{"role": "user", "content": f"Extract candidate structured data:\n{text}"}],
+        response_format={"type": "json_schema", "json_schema": schema}
     )
 
-    parsed_candidate: Candidate = response.choices[0].message.parsed
-    parsed_candidate.source_text = candidate_text
-    return parsed_candidate
+    msg = resp.choices[0].message
+
+    # ✅ 1 — если клиент поддерживает .parsed → используем
+    if hasattr(msg, "parsed") and msg.parsed:
+        return Candidate.model_validate(msg.parsed)
+
+    # ✅ 2 — fallback: берём JSON из текста
+    raw = msg.content
+    try:
+        data = json.loads(raw)
+    except:
+        # иногда модель добавляет лишние строки → ищем JSON внутри
+        import re
+        json_match = re.search(r"\{.*\}", raw, re.S)
+        if not json_match:
+            raise ValueError("LLM did not return JSON.")
+
+        data = json.loads(json_match.group(0))
+
+    return Candidate.model_validate(data)
+
 
 
 
