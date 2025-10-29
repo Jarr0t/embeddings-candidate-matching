@@ -1,7 +1,7 @@
 numpy
-faiss
-yaml
-openai
-dotenv
+faiss-cpu
+PyYAML
+python-dotenv
 pydantic
+openai
 streamlit
