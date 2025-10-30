@@ -1,6 +1,7 @@
-import os
+import re
 import json
 import streamlit as st
+from extract_job import parse_job
 
 from rank import rank
 from extract_job import Job
@@ -9,6 +10,27 @@ from build_embeddings import build as rebuild_embeddings
 
 st.set_page_config(page_title="ML Подбор кандидатов", layout="wide")
 st.title("🚀 AI-платформа подбора разработчиков")
+
+def pretty_box(text):
+    st.markdown(
+        """
+        <style>
+        .pretty-box {
+            background:#111;
+            border:1px solid #333;
+            border-radius:8px;
+            padding:12px;
+            font-family:monospace;
+            font-size:14px;
+            line-height:1.45;
+            white-space:pre-wrap;
+            overflow-x:auto;
+        }
+        </style>
+        """,
+        unsafe_allow_html=True
+    )
+    st.markdown(f"<div class='pretty-box'>{text}</div>", unsafe_allow_html=True)
 
 
 def year_word(y: float):
@@ -126,16 +148,13 @@ with tab_find:
             threshold=threshold
         )
 
-
-
-        st.success("✅ Готово! Лучшие кандидаты:")
-        if not results or len(results) == 0:
+        if not results:
             st.warning("❗ По заданному порогу ни один кандидат не подошёл.")
         else:
-
+            st.success("✅ Готово! Лучшие кандидаты:")
             def pct(x):
                 try:
-                    return f"{float(x)*100:.0f}%"
+                    return f"{float(x) * 100:.0f}%"
                 except:
                     return "—"
 
@@ -188,26 +207,77 @@ with tab_find:
                     st.write(f"**Текст резюме:**\n\n> {cand.source_text}")
 
                 with st.expander("🧩 Почему этот кандидат? (объяснение модели)"):
-                    if r['must_have_ok']:
-                        st.write("✅ Все обязательные навыки присутствуют")
-                    else:
-                        st.write("❌ Не все must-have навыки есть")
 
-                    if r['domain_match']:
-                        st.write("✅ Опыт в нужной доменной области")
-                    if r['level_match']:
-                        st.write("✅ Соответствие уровню вакансии")
-
+                    st.write(f"🧠 Семантика: **{pct(vec)}**")
                     st.write(f"🛠 Навыки: **{pct(cov)}**")
                     st.write(f"📅 Опыт: **{pct(exp)}**")
-                    st.write(f"🧠 Семантика: **{pct(vec)}**")
+                    st.write(f"🏢 Домен: {'✅' if r['domain_match'] else '❌'}")
+                    st.write(f"🎖 Уровень: {'✅' if r['level_match'] else '❌'}")
+                    st.markdown("---")
 
-                    missing = []
-                    for skill in job.must_have or []:
-                        if skill not in (cand.skills or []) and skill not in (cand.subskills or []):
-                            missing.append(skill)
-                    if missing:
-                        st.warning(f"❗ Отсутствуют обязательные навыки: {', '.join(missing)}")
+                    st.markdown("### 🔥 Совпадение навыков")
+
+                    job_skills = set(
+                        (job.must_have or []) + (job.nice_to_have or []) + (job.stack or []) + (job.substack or []))
+                    cand_skills = set((cand.skills or []) + (cand.subskills or []))
+
+                    matched = sorted(job_skills & cand_skills)
+                    missing_must = [m for m in (job.must_have or []) if m not in cand_skills]
+                    missing_nice = [n for n in (job.nice_to_have or []) if n not in cand_skills]
+
+                    # ✅ Чипы совпадений
+                    if matched:
+                        st.markdown("**✅ Совпадают:**")
+                        chips = " ".join([
+                                             f"<span style='background:#1f4f2f; color:#00ff9d; padding:4px 10px; border-radius:8px; margin:2px; display:inline-block;'>{m}</span>"
+                                             for m in matched])
+                        st.markdown(chips, unsafe_allow_html=True)
+
+                    # ❌ Чипы обязательных отсутствующих
+                    if missing_must:
+                        st.markdown("**❌ Не хватает обязательных:**")
+                        chips = " ".join([
+                                             f"<span style='background:#4a1111; color:#ff6b6b; padding:4px 10px; border-radius:8px; margin:2px; display:inline-block;'>{m}</span>"
+                                             for m in missing_must])
+                        st.markdown(chips, unsafe_allow_html=True)
+
+                    # ⭐ Чипы желательных
+                    if missing_nice:
+                        st.markdown("**⭐ Не критично, но нет:**")
+                        chips = " ".join([
+                                             f"<span style='background:#2b2b2b; color:#ffd95a; padding:4px 10px; border-radius:8px; margin:2px; display:inline-block;'>{m}</span>"
+                                             for m in missing_nice])
+                        st.markdown(chips, unsafe_allow_html=True)
+
+                    st.markdown("---")
+                    st.markdown("### ✨ Подсветка в резюме")
+
+                    highlight_words = matched + missing_must + missing_nice
+                    text = cand.source_text
+
+                    if highlight_words:
+                        pattern = r"(" + "|".join([re.escape(w) for w in highlight_words]) + r")"
+
+
+                        def repl(m):
+                            w = m.group(0)
+                            if w in matched:
+                                return f"<span style='background:#003b1f; color:#00ff9d; padding:2px 5px; border-radius:6px;'>{w}</span>"
+                            if w in missing_must:
+                                return f"<span style='background:#4a1111; color:#ff6b6b; padding:2px 5px; border-radius:6px;'>{w}</span>"
+                            return f"<span style='background:#2b2b2b; color:#ffd95a; padding:2px 5px; border-radius:6px;'>{w}</span>"
+
+
+                        text = re.sub(pattern, repl, text, flags=re.IGNORECASE)
+
+                    st.markdown(
+                        f"""
+                        <div style='background:#111; padding:12px; border-radius:8px; border:1px solid #333; white-space:pre-wrap;'>
+                            {text}
+                        </div>
+                        """,
+                        unsafe_allow_html=True
+                    )
 
                 st.markdown("---")
     else:
@@ -233,6 +303,53 @@ with tab_add:
                 # 1) Парсим через LLM
                 new_cand = parse_candidate(resume_text)
 
+                st.markdown("""
+                <div style="
+                    background:#1e1e1e;
+                    padding:15px;
+                    border-radius:10px;
+                    border:1px solid #444;
+                    margin-top:15px;
+                    margin-bottom:10px;">
+                    <b>📊 Как система обработала резюме кандидата:</b>
+                </div>
+                """, unsafe_allow_html=True)
+
+                col1, col2 = st.columns(2)
+
+                # ✅ Исходный текст
+                with col1:
+                    st.markdown("**📄 Исходное резюме:**")
+                    pretty_box(resume_text)
+
+                # ✅ Форматированный результат
+                with col2:
+                    st.markdown("**✅ Извлечённые данные:**")
+
+                    result_pretty = ""
+                    result_pretty += f"Имя: {new_cand.name or '—'}\n"
+                    result_pretty += f"Уровень: {new_cand.level or '—'}\n"
+                    result_pretty += f"Специализация: {new_cand.specialization or '—'}\n"
+                    result_pretty += f"Локация: {new_cand.location or '—'}\n\n"
+
+                    if new_cand.skills:
+                        result_pretty += f"Навыки: {', '.join(new_cand.skills)}\n"
+                    if new_cand.subskills:
+                        result_pretty += f"Фреймворки: {', '.join(new_cand.subskills)}\n"
+
+                    if new_cand.years_by_area:
+                        result_pretty += "\nОпыт по областям:\n"
+                        for area, years in new_cand.years_by_area.items():
+                            y = int(years) if years == int(years) else years
+                            result_pretty += f"  • {area}: {y} лет\n"
+
+                    if new_cand.salary_expectation:
+                        result_pretty += f"\nОжидаемая ставка: {new_cand.salary_expectation}\n"
+
+                    pretty_box(result_pretty)
+
+                st.divider()
+
                 # 2) Загружаем старый JSON
                 with open("data/candidates.json", "r", encoding="utf-8") as f:
                     data = json.load(f)
@@ -241,32 +358,32 @@ with tab_add:
                 new_id = max(int(item["id"]) for item in data) + 1
                 new_cand.id = new_id
 
-                # 4) Добавляем в JSON
+                # 4) Добавляем
                 data.append(new_cand.model_dump())
 
                 with open("data/candidates.json", "w", encoding="utf-8") as f:
                     json.dump(data, f, ensure_ascii=False, indent=2)
 
-                # 5) Перестраиваем вектора
+                # 5) Перестроить эмбеддинги
                 rebuild_embeddings()
 
                 st.success(f"✅ Кандидат добавлен! ID = {new_id}")
-                st.info("Данные обновлены — можно сразу искать среди новых кандидатов.")
+                st.info("Данные обновлены — можно искать среди новых кандидатов.")
 
             except Exception as e:
-                st.error(f"❌ Ошибка: {e}")
+                st.error("❌ Ошибка при обработке кандидата")
+                st.exception(e)
+
 
 # ====================================================================
 #   ✅ TAB 3 — ДОБАВЛЕНИЕ ВАКАНСИИ
 # ====================================================================
-from extract_job import parse_job
-
 with tab_add_job:
-    st.subheader("🆕 Добавление новой вакансии")
+    st.subheader("🆕 Добавление новой ваканссии")
 
     job_text = st.text_area(
         "Вставьте текст заявки:",
-        placeholder="Вставьте описание вакансии в свободной форме...",
+        placeholder="Вставьте описание ваканссии в свободной форме...",
         height=220
     )
 
@@ -275,27 +392,81 @@ with tab_add_job:
             st.error("❌ Пустой текст. Вставьте вакансию.")
         else:
             try:
-                # 1) Разбор через LLM
                 new_job = parse_job(job_text)
 
-                # 2) Загружаем старый json
+                st.markdown("""
+                <div style="
+                    background:#1e1e1e;
+                    padding:15px;
+                    border-radius:10px;
+                    border:1px solid #444;
+                    margin-top:15px;
+                    margin-bottom:10px;">
+                    <b>📊 Как система обработала вашу вакансию:</b>
+                </div>
+                """, unsafe_allow_html=True)
+
+                col1, col2 = st.columns(2)
+
+                # ✅ Исходный текст
+                with col1:
+                    st.markdown("**📄 Исходное описание:**")
+                    pretty_box(job_text)
+
+                # ✅ Форматированный результат
+                with col2:
+                    st.markdown("**✅ Извлечённые данные:**")
+
+                    # Формируем удобочитаемый вывод
+                    result_pretty = ""
+
+                    result_pretty += f"Название: {new_job.title or '—'}\n"
+                    result_pretty += f"Уровень: {new_job.level_required or '—'}\n"
+                    result_pretty += f"Домен: {new_job.domain or '—'}\n"
+                    result_pretty += f"Специализация: {new_job.specialization or '—'}\n\n"
+
+                    if new_job.stack:
+                        result_pretty += f"Стек: {', '.join(new_job.stack)}\n"
+                    if new_job.substack:
+                        result_pretty += f"Фреймворки: {', '.join(new_job.substack)}\n"
+
+                    if new_job.must_have:
+                        result_pretty += f"Обязательные навыки: {', '.join(new_job.must_have)}\n"
+                    if new_job.nice_to_have:
+                        result_pretty += f"Желательно: {', '.join(new_job.nice_to_have)}\n"
+
+                    if new_job.salary_max:
+                        result_pretty += f"Бюджет: до {new_job.salary_max}\n"
+
+                    if getattr(new_job, "exp_min_years_overall", None):
+                        y = int(new_job.exp_min_years_overall)
+                        result_pretty += f"Опыт: от {y} лет\n"
+
+                    if getattr(new_job, "exp_min_years_by_area", None):
+                        result_pretty += "Опыт по областям:\n"
+                        for area, years in new_job.exp_min_years_by_area.items():
+                            result_pretty += f"  • {area}: от {int(years)} лет\n"
+
+                    pretty_box(result_pretty)
+
+                st.divider()
+
+                # ✅ Сохранение
                 with open("data/jobs.json", "r", encoding="utf-8") as f:
                     data = json.load(f)
 
-                # 3) Новый ID
                 new_id = max(int(item["id"]) for item in data) + 1
                 new_job.id = new_id
 
-                # 4) Добавляем в JSON
                 data.append(new_job.model_dump())
 
                 with open("data/jobs.json", "w", encoding="utf-8") as f:
                     json.dump(data, f, ensure_ascii=False, indent=2)
 
                 st.success(f"✅ Вакансия добавлена! ID = {new_id}")
-                st.info("Теперь её можно выбрать в поиске кандидатов.")
+                st.info("Теперь она доступна в поиске.")
 
             except Exception as e:
-                st.error(f"❌ Ошибка: {e}")
+                st.error("❌ Ошибка при обработке ваканссии")
                 st.exception(e)
 
