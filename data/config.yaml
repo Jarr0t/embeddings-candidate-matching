@@ -146,3 +146,8 @@ localization:
     missing_skills: "Отсутствуют обязательные навыки"
     domain_match: "Опыт в нужной доменной области"
     level_match: "Соответствие уровню вакансии"
+
+skill_match:
+  threshold_strict: 0.80
+  threshold_partial: 0.60
+  require_strict_for_must: true

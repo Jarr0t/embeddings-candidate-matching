@@ -84,7 +84,14 @@ if st.sidebar.button("🔄 Обновить данные"):
 # ============================
 #   ВКЛАДКИ
 # ============================
-tab_find, tab_add, tab_add_job = st.tabs(["🔍 Поиск кандидатов", "➕ Добавить кандидата", "🆕 Добавить вакансию"])
+tab_find, tab_all_cand, tab_all_jobs, tab_add, tab_add_job = st.tabs([
+    "🔍 Поиск кандидатов",
+    "📋 Все кандидаты",
+    "📌 Все вакансии",
+    "➕ Добавить кандидата",
+    "🆕 Добавить вакансию"
+])
+
 
 # ====================================================================
 #   ✅ TAB 1 — ПОИСК
@@ -215,57 +222,83 @@ with tab_find:
                     st.write(f"🎖 Уровень: {'✅' if r['level_match'] else '❌'}")
                     st.markdown("---")
 
-                    st.markdown("### 🔥 Совпадение навыков")
+                    st.markdown("### 🔥 Совпадение навыков (семантическое)")
 
-                    job_skills = set(
-                        (job.must_have or []) + (job.nice_to_have or []) + (job.stack or []) + (job.substack or []))
-                    cand_skills = set((cand.skills or []) + (cand.subskills or []))
+                    matches = r.get("skill_matches", [])  # [(req, found, sim)]
+                    partials = r.get("skill_partials", [])  # [(req, found, sim)]
+                    missing_must = r.get("missing_must_have", [])  # [skill names]
 
-                    matched = sorted(job_skills & cand_skills)
-                    missing_must = [m for m in (job.must_have or []) if m not in cand_skills]
-                    missing_nice = [n for n in (job.nice_to_have or []) if n not in cand_skills]
+                    # собираем все требования вакансии
+                    req_all = (job.must_have or []) + (job.nice_to_have or []) + (job.stack or []) + (
+                                job.substack or [])
 
-                    # ✅ Чипы совпадений
-                    if matched:
-                        st.markdown("**✅ Совпадают:**")
+                    # какие не покрыты вообще
+                    covered_req = set([m[0] for m in matches] + [p[0] for p in partials] + missing_must)
+                    missing_other = [x for x in req_all if x not in covered_req]
+
+                    # ✅ строгие совпадения
+                    if matches:
+                        st.markdown("**✅ Совпадают строго:**")
                         chips = " ".join([
-                                             f"<span style='background:#1f4f2f; color:#00ff9d; padding:4px 10px; border-radius:8px; margin:2px; display:inline-block;'>{m}</span>"
-                                             for m in matched])
+                            f"<span style='background:#1f4f2f; color:#00ff9d; padding:4px 10px; border-radius:8px; margin:2px; display:inline-block;'>{m[0]} ➝ {m[1]}</span>"
+                            for m in matches
+                        ])
                         st.markdown(chips, unsafe_allow_html=True)
 
-                    # ❌ Чипы обязательных отсутствующих
+                    # 🔶 частичные совпадения
+                    if partials:
+                        st.markdown("**🔶 Частично совпадают:**")
+                        chips = " ".join([
+                            f"<span style='background:#2b2b2b; color:#ffd95a; padding:4px 10px; border-radius:8px; margin:2px; display:inline-block;'>{p[0]} ≈ {p[1]}</span>"
+                            for p in partials
+                        ])
+                        st.markdown(chips, unsafe_allow_html=True)
+
+                    # ❌ must-have отсутствуют
                     if missing_must:
                         st.markdown("**❌ Не хватает обязательных:**")
                         chips = " ".join([
-                                             f"<span style='background:#4a1111; color:#ff6b6b; padding:4px 10px; border-radius:8px; margin:2px; display:inline-block;'>{m}</span>"
-                                             for m in missing_must])
+                            f"<span style='background:#4a1111; color:#ff6b6b; padding:4px 10px; border-radius:8px; margin:2px; display:inline-block;'>{m}</span>"
+                            for m in missing_must
+                        ])
                         st.markdown(chips, unsafe_allow_html=True)
 
-                    # ⭐ Чипы желательных
-                    if missing_nice:
+                    # ⭐ просто нет
+                    if missing_other:
                         st.markdown("**⭐ Не критично, но нет:**")
                         chips = " ".join([
-                                             f"<span style='background:#2b2b2b; color:#ffd95a; padding:4px 10px; border-radius:8px; margin:2px; display:inline-block;'>{m}</span>"
-                                             for m in missing_nice])
+                            f"<span style='background:#222; color:#aaa; padding:4px 10px; border-radius:8px; margin:2px; display:inline-block;'>{m}</span>"
+                            for m in missing_other
+                        ])
                         st.markdown(chips, unsafe_allow_html=True)
 
                     st.markdown("---")
                     st.markdown("### ✨ Подсветка в резюме")
 
-                    highlight_words = matched + missing_must + missing_nice
+                    # подсветка в исходном тексте
+                    highlight_words = (
+                            [m[0] for m in matches] +
+                            [p[0] for p in partials] +
+                            missing_must +
+                            missing_other
+                    )
+
                     text = cand.source_text
 
                     if highlight_words:
+                        # экранируем слова, если есть спецсимволы
                         pattern = r"(" + "|".join([re.escape(w) for w in highlight_words]) + r")"
 
 
-                        def repl(m):
-                            w = m.group(0)
-                            if w in matched:
+                        def repl(mo):
+                            w = mo.group(0)
+                            if any(w == mm[0] for mm in matches):
                                 return f"<span style='background:#003b1f; color:#00ff9d; padding:2px 5px; border-radius:6px;'>{w}</span>"
                             if w in missing_must:
                                 return f"<span style='background:#4a1111; color:#ff6b6b; padding:2px 5px; border-radius:6px;'>{w}</span>"
-                            return f"<span style='background:#2b2b2b; color:#ffd95a; padding:2px 5px; border-radius:6px;'>{w}</span>"
+                            if any(w == pp[0] for pp in partials):
+                                return f"<span style='background:#2b2b2b; color:#ffd95a; padding:2px 5px; border-radius:6px;'>{w}</span>"
+                            return f"<span style='background:#222; color:#aaa; padding:2px 5px; border-radius:6px;'>{w}</span>"
 
 
                         text = re.sub(pattern, repl, text, flags=re.IGNORECASE)
@@ -284,7 +317,98 @@ with tab_find:
         st.info("⬅ Выберите вакансию и нажмите кнопку!")
 
 # ====================================================================
-#   ✅ TAB 2 — ДОБАВЛЕНИЕ КАНДИДАТА
+#   ✅ TAB 2 — СПИСОК ВСЕХ КАНДИДАТОВ
+# ====================================================================
+with tab_all_cand:
+    st.subheader("📋 Все кандидаты")
+
+    for c in candidates:
+        st.markdown(
+            f"""
+            <div style="
+                border:1px solid #333; 
+                border-radius:10px; 
+                padding:15px; 
+                margin-bottom:12px; 
+                background:#141414;
+            ">
+                <h4 style="margin:0;">🧑 {c.name}</h4>
+                <b>Уровень:</b> {c.level or '—'}<br>
+                <b>Специализация:</b> {c.specialization or '—'}<br>
+                <b>Навыки:</b> {', '.join(c.skills or [])}<br>
+                <b>Фреймворки:</b> {', '.join(c.subskills or [])}<br>
+            </div>
+            """,
+            unsafe_allow_html=True
+        )
+
+        with st.expander("📄 Полный текст резюме"):
+            st.markdown(
+                f"""
+                <div style="
+                    background:#111; 
+                    padding:12px; 
+                    border-radius:8px; 
+                    border:1px solid #333; 
+                    white-space:pre-wrap;
+                ">
+                    {c.source_text}
+                </div>
+                """,
+                unsafe_allow_html=True
+            )
+
+# ====================================================================
+#   ✅ TAB 3 — СПИСОК ВСЕХ ВАКАНСИЙ
+# ====================================================================
+with tab_all_jobs:
+    st.subheader("📌 Все вакансии")
+
+    for j in jobs:
+        st.markdown(
+            f"""
+            <div style="
+                border: 1px solid #2c2c2c;
+                border-radius: 14px;
+                padding: 18px;
+                margin-bottom: 18px;
+                background: linear-gradient(145deg, #161616, #111);
+                box-shadow: 0 2px 6px rgba(0,0,0,0.4);
+            ">
+                <h4 style="margin-top:0; margin-bottom:10px;">💼 {j.title}</h4>
+                <div style="line-height:1.6; font-size:15px;">
+                    <b>Уровень:</b> {j.level_required or '—'}<br>
+                    <b>Домен:</b> {j.domain or '—'}<br>
+                    <b>Специализация:</b> {j.specialization or '—'}<br>
+                    <b>Стек:</b> {', '.join(j.stack or []) or '—'}<br>
+                    <b>Must-have:</b> {', '.join(j.must_have or []) or '—'}<br>
+                    <b>Nice-to-have:</b> {', '.join(j.nice_to_have or []) or '—'}
+                </div>
+            </div>
+            """,
+            unsafe_allow_html=True
+        )
+
+        with st.expander("📄 Развернуть описание", expanded=False):
+            st.markdown(
+                f"""
+                <div style="
+                    background:#121212; 
+                    padding:14px; 
+                    border-radius:10px; 
+                    border:1px solid #2a2a2a;
+                    margin-top:5px;
+                    white-space:pre-wrap;
+                    line-height:1.55;
+                ">
+                    {j.source_text}
+                </div>
+                """,
+                unsafe_allow_html=True
+            )
+
+# ====================================================================
+#   ✅ TAB 4 — ДОБАВЛЕНИЕ КАНДИДАТА
 # ====================================================================
 with tab_add:
     st.subheader("➕ Добавление нового кандидата")
@@ -376,7 +500,7 @@ with tab_add:
 
 
 # ====================================================================
-#   ✅ TAB 3 — ДОБАВЛЕНИЕ ВАКАНСИИ
+#   ✅ TAB 5 — ДОБАВЛЕНИЕ ВАКАНСИИ
 # ====================================================================
 with tab_add_job:
     st.subheader("🆕 Добавление новой ваканссии")
