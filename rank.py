@@ -402,7 +402,7 @@ def job_embedding(job: Job):
 # ==============================
 #          RANK
 # ==============================
-def rank(job_id: int, top_n=3, custom_weights=None, threshold=0.0):
+def rank(job_id: int, top_n=3, custom_weights=None, threshold=0.0, strict_thr=None, partial_thr=None):
     weights = custom_weights or CONFIG["weights"]
     candidates, jobs, vectors, index, id_map = load_all()
 
@@ -424,8 +424,11 @@ def rank(job_id: int, top_n=3, custom_weights=None, threshold=0.0):
 
         cov, must_ok, overlap, total_skills, missing_must, matches, partials = skill_coverage_fast(
             job, cand,
-            thr_strict=CONFIG.get("skill_match", {}).get("threshold_strict", 0.80),
-            thr_partial=CONFIG.get("skill_match", {}).get("threshold_partial", 0.60),
+            thr_strict=(
+                strict_thr if strict_thr is not None else CONFIG.get("skill_match", {}).get("threshold_strict", 0.80)),
+            thr_partial=(
+                partial_thr if partial_thr is not None else CONFIG.get("skill_match", {}).get("threshold_partial",
+                                                                                              0.60)),
             require_strict_for_must=CONFIG.get("skill_match", {}).get("require_strict_for_must", True),
         )
 
