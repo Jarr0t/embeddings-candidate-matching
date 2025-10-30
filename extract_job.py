@@ -41,19 +41,58 @@ def parse_job(text: str) -> Job:
     msg = resp.choices[0].message
 
     if hasattr(msg, "parsed") and msg.parsed:
-        return Job.model_validate(msg.parsed)
+        data = msg.parsed
+    else:
+        raw = msg.content
+        try:
+            data = json.loads(raw)
+        except:
+            import re
+            json_match = re.search(r"\{.*\}", raw, re.S)
+            if not json_match:
+                raise ValueError("LLM did not return JSON.")
+            data = json.loads(json_match.group(0))
 
-    raw = msg.content
-    try:
-        data = json.loads(raw)
-    except:
-        import re
-        json_match = re.search(r"\{.*\}", raw, re.S)
-        if not json_match:
-            raise ValueError("LLM did not return JSON.")
-        data = json.loads(json_match.group(0))
+    exp_by_area = data.get("exp_min_years_by_area")
+    if exp_by_area and isinstance(exp_by_area, dict):
+
+        cleaned = {}
+        for k, v in exp_by_area.items():
+
+            if isinstance(v, (int, float)):
+                cleaned[k] = float(v)
+                continue
+
+            if isinstance(v, str):
+                v_clean = v.replace(" ", "").lower()
+
+                if "-" in v_clean:
+                    part = v_clean.split("-")[0]
+                    try:
+                        cleaned[k] = float(part)
+                        continue
+                    except:
+                        pass
+
+                if v_clean.endswith("+"):
+                    try:
+                        cleaned[k] = float(v_clean[:-1])
+                        continue
+                    except:
+                        pass
+
+                import re
+                nums = re.findall(r"\d+\.?\d*", v_clean)
+                if nums:
+                    cleaned[k] = float(nums[0])
+                    continue
+
+            cleaned[k] = 0
+
+        data["exp_min_years_by_area"] = cleaned
 
     return Job.model_validate(data)
+
 
 
 

@@ -77,6 +77,16 @@ def parse_candidate(text: str) -> Candidate:
 
         data = json.loads(json_match.group(0))
 
+    # Очистка перед валидацией
+    if "years_by_area" in data and isinstance(data["years_by_area"], dict):
+        clean_years = {}
+        for k, v in data["years_by_area"].items():
+            try:
+                clean_years[k] = float(v) if v is not None else 0.0
+            except Exception:
+                clean_years[k] = 0.0
+        data["years_by_area"] = clean_years
+
     return Candidate.model_validate(data)
 
 
