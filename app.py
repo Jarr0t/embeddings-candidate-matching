@@ -71,6 +71,16 @@ level_w = st.sidebar.slider("🎖 Уровень", 0.0, 1.0, 0.05)
 
 top_k = st.sidebar.slider("Сколько лучших кандидатов показать?", 1, 10, 3)
 
+strict_thr = st.sidebar.slider(
+    "✅ Порог строгого совпадения навыков (STRICT)",
+    0.0, 1.0, 0.80, 0.01
+)
+
+partial_thr = st.sidebar.slider(
+    "🔶 Порог частичного совпадения навыков (PARTIAL)",
+    0.0, 1.0, 0.60, 0.01
+)
+
 threshold = st.sidebar.slider(
     "🔎 Минимальный score для кандидата (порог отсечения)",
     0.0, 1.0, 0.0, 0.01
@@ -152,7 +162,9 @@ with tab_find:
                 domain=domain_w,
                 level=level_w
             ),
-            threshold=threshold
+            threshold=threshold,
+            strict_thr = strict_thr,
+            partial_thr = partial_thr,
         )
 
         if not results:
