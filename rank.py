@@ -308,8 +308,8 @@ def get_vector_similarity(dist):
 
 # ========== RANK ==========
 
-def rank(job_id: int, top_n=3, custom_weights=None, threshold=0.0,
-         strict_thr=None, partial_thr=None, nice_weight=0.3):
+def rank(job_id, top_n=3, custom_weights=None, threshold=0.0,
+         strict_thr=0.75, partial_thr=0.55, nice_weight=0.25, **kwargs):
 
     weights = custom_weights or CONFIG["weights"]
 
