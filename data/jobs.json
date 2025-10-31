@@ -579,5 +579,59 @@
     "location": "РФ / СНГ / удалённо",
     "salary_max": 2200.0,
     "source_text": "Senior Golang Developer\n\nСтавка: до 2 200 ₽/час\nФормат: fulltime\nЛокация: РФ / СНГ / удалённо\nПериод: 6–12 месяцев\n\nТехнологии:\n\nGo, microservices, gRPC, HTTP;\n\nKafka/RabbitMQ, Redis, PostgreSQL;\n\nDocker, Kubernetes, CI/CD.\n\nЗадачи:\n\nразработка и поддержка микросервисов;\n\nоптимизация и профилирование производительности;\n\nобмен данными через очереди, шардирование;\n\nинтеграции с внешними системами и биллингом;\n\nучастие в архитектуре.\n\nЖелательно:\n\nопыт highload,\n\nмониторинг через Prometheus/Grafana,\n\nпонимание распределённых систем."
+  },
+  {
+    "id": 12,
+    "title": "Linux administrator/DevOps",
+    "level_required": "middle/senior",
+    "specialization": "Linux administrator / DevOps",
+    "domain": "DevOps / Infrastructure",
+    "stack": [
+      "Linux",
+      "Make",
+      "CMake",
+      "gcc",
+      "g++",
+      "deb packaging",
+      "Ansible",
+      "Jenkins",
+      "GitLab CI/CD",
+      "Docker",
+      "LXC",
+      "Zabbix",
+      "Grafana",
+      "ELK (Elasticsearch/Logstash/Kibana)",
+      "KVM",
+      "Libvirt"
+    ],
+    "substack": [
+      "CI/CD",
+      "Build & packaging",
+      "Containerization",
+      "Monitoring",
+      "Logging",
+      "Automation (Ansible)",
+      "Virtualization",
+      "Information security"
+    ],
+    "must_have": [
+      "Опыт администрирования Linux систем",
+      "Навыки сборки ПО, знание основных инструментов (Make/CMake/gcc/g++/etc)",
+      "Опыт создания deb пакетов",
+      "Практический опыт работы с Ansible",
+      "Опыт настройки и работы в Jenkins и GitLab CI/CD",
+      "Опыт работы с контейнеризацией (docker, LXC)",
+      "Опыт настройки систем мониторинга (Zabbix/Grafana)",
+      "Опыт настройки ELK",
+      "Уверенные знания принципов информационной безопасности"
+    ],
+    "nice_to_have": [
+      "Опыт администрирования Linux серверов в HA интернет-проектах",
+      "Знание систем виртуализации (KVM/Libvirt)"
+    ],
+    "exp_min_years_by_area": {},
+    "location": "Тбилиси / удалённо (remote, любая локация)",
+    "salary_max": null,
+    "source_text": "Публикатор: Marina Alexandrovna\nОбсуждение вакансии в чате @devops_jobs\n#remote #devops #Тбилиси #удаленка #Грузия #вакансия #senior #middle \n\nКомпания: Scalable Solutions\nВакансия: Linux administrator/DevOps\nФормат работы: remote любая локация/офис Тбилиси\nВилка:  3000к час\nЗанятость: полная.\nЛокация: Тбилиси/удаленка\n\nТребования:\n1. Опыт администрирования Linux систем;\n2. Навыки сборки ПО, знание основных инструментов (Make/Cmake/gcc/g++/etc), опыт создания deb пакетов;\n3. Практический опыт работы с Ansible;\n4. Опыт настройки и работы в Jenkins и GitLab CI/CD;\n5. Опыт работы с контейнеризацией (docker, LXC);\n6. Опыт настройки систем мониторинга (Zabbix/Grafana);\n7. Опыт настройки ELK;\n8. Уверенные знания принципов информационной безопасности.\n\n\nБудет плюсом:\n1. Опыт администрирования Linux серверов в HA интернет-проектах;\n2. Знание систем виртуализации (KVM/Libvirt).\n\n\nОбязанности:\n1. Сопровождать stage/prod окружения;\n2. Автоматизировать сборку и доставку ПО (CI/CD);\n3. Настраивать мониторинг и логирование;\n4. Писать новые роли Ansible.\n\nМы предлагаем:\n-Возможность работы из любой локации;\n-ЗП в валюте.\n\nО нас: https://m.youtube.com/watch?v=gnV2tUcfn4A \n\nКонтакт для связи, tg: @marinaalexandrovnaa"
   }
 ]

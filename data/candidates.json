@@ -650,5 +650,73 @@
     "contacts": {},
     "source_text": "Андрей Назаров\n\nSenior DevOps / SRE, 7 лет опыта.\n\nБогатый опыт создания DevOps-инфраструктуры под высоконагруженные проекты. Работал с Kubernetes, Docker, Terraform, Ansible, Helm, AWS, Prometheus, Grafana, CI/CD (GitLab, GitHub Actions).\n\nДелал:\n\nавтоматизацию деплоя и миграций;\n\nнастройку мониторинга и алертинга;\n\nоптимизацию стоимости облака;\n\nотказоустойчивые кластеры с autoscaling;\n\nбезопасность и управление секретами.\n\nЗакрывает роль, когда нужна стабильность продакшена, скорость релизов, прозрачность мониторинга и предсказуемый SLA.\n\nЛокация: Казахстан\nФормат: удалённо\nОжидания: от 2500 час ₽",
     "id": 12
+  },
+  {
+    "name": "Иван Сергеев",
+    "level": "Senior",
+    "specialization": "Backend Engineer (Python)",
+    "domains": [
+      "Software Development",
+      "Highload",
+      "Fintech",
+      "E-commerce",
+      "Microservices",
+      "API Development"
+    ],
+    "skills": [
+      "Python",
+      "Django",
+      "FastAPI",
+      "AsyncIO",
+      "Kafka",
+      "RabbitMQ",
+      "Celery",
+      "Redis",
+      "PostgreSQL",
+      "Docker",
+      "Kubernetes",
+      "Helm",
+      "GitLab CI",
+      "GitHub Actions",
+      "Grafana",
+      "Prometheus",
+      "ELK",
+      "SQL optimization",
+      "Profiling",
+      "CI/CD"
+    ],
+    "subskills": [
+      "Microservices design",
+      "API design",
+      "Highload systems",
+      "Horizontal scaling",
+      "Sharding",
+      "Replication",
+      "Caching (Redis)",
+      "Query optimization",
+      "Asynchronous processing",
+      "Message queues (Kafka, RabbitMQ, Celery)",
+      "Monitoring",
+      "Logging",
+      "Performance profiling (py-spy, cProfile)",
+      "Memory leak detection/optimization",
+      "Automated testing",
+      "Linters/Code quality",
+      "Code review",
+      "Mentoring",
+      "Deployment to Kubernetes",
+      "SLA-oriented architecture"
+    ],
+    "years_by_area": {
+      "overall_experience": 6.0,
+      "python": 6.0,
+      "senior_backend_engineer": 3.0,
+      "backend_developer": 3.0
+    },
+    "location": "Россия (удалёнка/офис)",
+    "salary_expectation": null,
+    "contacts": {},
+    "source_text": "Иван Сергеев\nSenior Backend Engineer (Python)\nОпыт: 6 лет коммерческой разработки в Software Development / Highload\nЛокация: Россия, удалёнка/офис\nФормат: full-time\n\n💼 КРАТКО О СЕБЕ\n\nSenior Backend (Python) разработчик с опытом проектирования микросервисов, высоконагруженных систем и сложных API.\nСпециализируюсь на Python, Django, FastAPI, AsyncIO, Kafka, RabbitMQ, Celery, Redis, PostgreSQL, Docker, Kubernetes, CI/CD (GitLab CI, GitHub Actions).\nРаботал в проектах с высокими SLA, горизонтальным масштабированием, шардированием, профилированием и оптимизацией узких мест.\n\n🛠 ТЕХНОЛОГИЧЕСКИЙ СТЕК\n\nЯзыки и backend:\n\nPython — 6 лет\n\nDjango, FastAPI, AsyncIO\n\nРазработка микросервисов и внутренних API\n\nОптимизация API, профилирование, highload\n\nОчереди и коммуникация:\n\nKafka, RabbitMQ, Celery\n\nБаза данных и кеши:\n\nPostgreSQL, Redis\n\nОптимизация запросов, шардирование, репликация\n\nDevOps / CI/CD:\n\nDocker, Kubernetes\n\nGitLab CI, GitHub Actions\n\nМониторинг (Grafana, Prometheus), логирование ELK\n\n📌 КЛЮЧЕВЫЕ РЕЗУЛЬТАТЫ\n\nПереписал монолит на микросервисную архитектуру с ориентиром на highload — рост пропускной способности API с 3k → 15k RPS\n\nОптимизировал тяжелые SQL-запросы и кеширование через Redis → ускорение эндпоинтов до x7\n\nПостроил очередь Kafka для асинхронной обработки транзакций → задержка уменьшена в 4 раза\n\nВнедрил CI/CD (GitLab CI + GitHub Actions), контроль качества, авто-тесты, линтеры, деплой в Kubernetes\n\nПрофилирование (py-spy, cProfile), поиск утечек, оптимизация памяти\n\n🏢 ОПЫТ\n\nSenior Backend Engineer — 3 года\nФинтех, e-commerce, Software Development\n\nПроектирование микросервисов с нуля\n\nРабота с Kubernetes, Docker, Helm\n\nKafka + Celery + RabbitMQ\n\nОптимизация API и баз данных\n\nПоддержка highload и SLA 99.95%\n\nPython Backend Developer — 3 года\n\nDjango, FastAPI, AsyncIO\n\nPostgreSQL, Redis, REST API\n\nИнтеграции с внешними сервисами\n\nCode review, менторство, архитектурные решения",
+    "id": 13
   }
 ]

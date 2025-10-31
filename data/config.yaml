@@ -1,27 +1,27 @@
 weights:
-  vector: 0.35          # семантическая близость
-  skills: 0.25          # покрытие навыков
-  experience: 0.15      # соответствие по опыту
-  domain: 0.15          # совпадение доменной области
-  level: 0.10           # соответствие по грейду
+  vector: 0.20
+  skills: 0.50
+  experience: 0.10
+  domain: 0.10
+  level: 0.15
 
 rules:
-  enforce_must_have: true        # если нет обязательных навыков → штраф/фильтр
-  allow_overqualified: true       # разрешать кандидатов выше уровня
-  filter_by_level_order: false    # отключено: можно включить как строгий фильтр по грейду
-  min_experience_years: 1         # минимальный стаж
+  enforce_must_have: true
+  allow_overqualified: true
+  filter_by_level_order: false
+  min_experience_years: 1
   partial_match_for_subskills: true
 
 penalties:
-  missing_must_have: 0.6          # если отсутствует must-have → умножаем скор
-  domain_mismatch: 0.8
-  level_mismatch: 0.85
-  low_skill_coverage: 0.7         # если навыков <50%
+  missing_must_have: 0.95
+  domain_mismatch: 0.95
+  level_mismatch: 0.95
+  low_skill_coverage: 0.95
 
 bonuses:
-  full_match_subskills: 0.05      # если совпали все фреймворки
-  recent_relevant: 0.07           # если недавно работал в похожей доменной области
-  high_experience: 0.05           # больше, чем требуется
+  full_match_subskills: 0.05
+  recent_relevant: 0.07
+  high_experience: 0.05
 
 levels_order:
   - junior
@@ -29,111 +29,592 @@ levels_order:
   - senior
   - lead
   - principal
+  - staff
+  - architect
+  - distinguished
 
 specializations:
   - backend
   - frontend
   - fullstack
   - data
-  - mobile
-  - qa
+  - data-engineering
+  - analytics
+  - ml
+  - nlp
+  - cv
+  - mlops
   - devops
+  - sre
+  - mobile
+  - android
+  - ios
+  - qa
+  - autotest
+  - gamedev
+  - security
+  - sys
+  - embedded
+  - iot
+  - bioinformatics
   - 1c
 
 aliases:
   levels:
     jr: junior
     jun: junior
+    джун: junior
     джуниор: junior
     middle: middle
     mid: middle
     мидл: middle
     sr: senior
     snr: senior
-    sеnior: senior
     senior: senior
     сеньор: senior
+    вед: lead
+    лид: lead
+    тимлид: lead
+    principal: principal
+    архитектор: architect
+
   skills:
     py: python
     питон: python
     python3: python
+    django rest: drf
+    drf: django rest framework
+    pandas: pandas
     postgres: postgresql
-    pgsql: postgresql
     pg: postgresql
-    ts: typescript
+    pgsql: postgresql
+    redis cluster: redis
+    docker-compose: docker
+    docker compose: docker
+    docker swarm: docker
+    k8s: kubernetes
+    k8: kubernetes
+    helm charts: helm
+    gitlab: gitlab ci
+    gitlab-ci: gitlab ci
+    ci/cd: ci cd
+    ci-cd: ci cd
+    cicd: ci cd
     js: javascript
+    ts: typescript
+    node: nodejs
+    node js: nodejs
+    expressjs: express
+    nest: nestjs
+    reactjs: react
+    nextjs: "next.js"
+    nuxtjs: nuxt
+    vuejs: vue
+    vue 3: vue
+    angularjs: angular
+    sveltekit: svelte
+    c++: cpp
+    c plus plus: cpp
+    c# : csharp
+    dotnet: ".net"
+    .net core: ".net"
+    asp.net: "asp.net"
+    aspnet: "asp.net"
+    winforms: ".net"
+    wpf: ".net"
+    go: golang
+    golang: golang
+    rustlang: rust
+    jvm: java
+    springboot: spring boot
+    spring data: spring
+    spring cloud: spring
+    oracle db: oracle
+    ms sql: mssql
+    sql server: mssql
+    mariadb: mysql
+    sqlite3: sqlite
+    mongo: mongodb
+    es: elasticsearch
+    opensearch: elasticsearch
+    cassandra db: cassandra
+    ck: clickhouse
+    rabbit: rabbitmq
+    rmq: rabbitmq
+    kafka streams: kafka
+    nats io: nats
+    sqs: aws sqs
+    gcs: google cloud storage
+    s3: aws s3
+    ec2: aws ec2
+    gke: google kubernetes engine
+    eks: aws eks
+    aks: azure aks
+    terraform cloud: terraform
+    ansible awx: ansible
+    packer.io: packer
+    prometheus.io: prometheus
+    grafana loki: loki
+    opentelemetry: open-telemetry
+    pytest: pytest
+    unittest: python unittest
+    playwright: playwright
+    selenium-webdriver: selenium
+    cypressio: cypress
+    jmeter: jmeter
+    locustio: locust
+    torchvision: pytorch torchvision
     tf: tensorflow
     torch: pytorch
-    scikit: scikit-learn
+    keras-tf: keras
     sklearn: scikit-learn
-    reactjs: react
-    nextjs: next.js
-    docker-compose: docker
-    1с: 1c
-    1 c: 1c
-    c++: cpp
-    c# : csharp
-  subskills:
-    redux-toolkit: redux
-    transformer: transformers
+    scikit: scikit-learn
+    hf: huggingface
+    hf transformers: transformers
+    bert: bert
+    gpt: gpt
+    spacy: spacy
+    nltk: nltk
+    razer: fastapi
+    flask restx: flask
+    aiohttp client: aiohttp
+    ray.io: ray
+    spark: apache spark
+    pyspark: apache spark
+    hadoop: apache hadoop
+    flink: apache flink
+    hive: apache hive
+    presto: prestodb
+    trino: trino
+    kafka connect: kafka
+    airflow: apache airflow
+    mlflow: mlflow
+    feast: feast
+    kubeflow: kubeflow
+    sagemaker: aws sagemaker
+    databricks: databricks
+    bigquery: google bigquery
+    redshift: aws redshift
+    snowflake db: snowflake
+    dbt core: dbt
+    superset: apache superset
+    metabase: metabase
+    grafana: grafana
+    kibana: kibana
+    elk: elastic stack
+    efk: elastic stack
+    jaeger: jaeger
+    sentry: sentry
+    newrelic: new relic
+    datadog: datadog
+    clickhouse: clickhouse
+    arangodb: arangodb
+    neo4j: neo4j
+    timescaledb: timescaledb
+    influxdb: influxdb
+    postgres-xl: postgresql
+    presto sql: prestodb
+    duckdb: duckdb
+    delta lake: delta-lake
+    iceberg: apache iceberg
+    hudi: apache hudi
+    grpc: grpc
+    thrift: thrift
+    protobuf: protobuf
+    rest: rest api
+    restapi: rest api
+    soap: soap
+    graphql: graphql
+    web sockets: websockets
+    websockets: websockets
+    redis streams: redis
+    redis pubsub: redis
+    fastapi: fastapi
+    django: django
+    flask: flask
     celery: celery
     kafka: kafka
-    ut: 1c_ut
-    зуп: 1c_zup
-    бух: 1c_buh
+    rabbitmq: rabbitmq
+    asyncio: asyncio
+    highload: highload
+    profiling: profiling
+    api optimization: api optimization
+
+  subskills:
+    redux-toolkit: redux
+    selenium-webdriver: selenium
+    celery: celery
+    airflow: apache airflow
+    spark: apache spark
+    hadoop: apache hadoop
+    dockerfile: docker
+    helm-charts: helm
+    keda: keda
+    istio: istio
+    linkerd: linkerd
+    argo: argo
+    argo cd: argo cd
+    argo workflows: argo
+    consul: consul
+    vault: vault
+    keycloak: keycloak
+
   domains:
     ecommerce: retail
     e-commerce: retail
+    marketplace: retail
     ecomm: retail
     ритейл: retail
     banking: fintech
+    банк: fintech
+    payments: fintech
     финтех: fintech
     insuretech: fintech
-    med: healthcare
-    медицина: healthcare
+    страхование: fintech
     медтех: healthcare
+    медицина: healthcare
+    pharma: healthcare
+    фарма: healthcare
+    logistics: logistics
+    логистика: logistics
+    доставка: logistics
+    delivery: logistics
+    telecom: telecom
+    связь: telecom
+    education: edtech
+    edtech: edtech
+    образование: edtech
+    gaming: gamedev
+    игры: gamedev
+    social: social
+    social media: social
+    real estate: real-estate
+    недвижимость: real-estate
+    travel: travel
+    туризм: travel
+    government: govtech
+    госуслуги: govtech
+    energy: energy
+    энергетика: energy
+    automotive: automotive
+    авто: automotive
+    manufacturing: manufacturing
+    промышленность: manufacturing
 
 skill_hierarchy:
   python:
     - django
+    - django rest framework
     - fastapi
+    - flask
+    - aiohttp
+    - celery
     - numpy
     - pandas
+    - scipy
+    - scikit-learn
     - pytorch
+    - pytorch lightning
+    - torchvision
     - tensorflow
-    - airflow
+    - keras
+    - transformers
+    - ray
+    - apache airflow
     - mlflow
+    - grpc
+    - pytest
+    - sqlalchemy
+    - pydantic
+
   javascript:
     - react
-    - next.js
-    - redux
+    - "next.js"
+    - angular
+    - vue
+    - nuxt
     - nodejs
-  typescript:
-    - react
-    - next.js
+    - express
+    - nestjs
     - redux
-    - nodejs
-  sql:
+    - graphql
+    - webpack
+    - vite
+    - jest
+    - cypress
+
+  java:
+    - spring
+    - spring boot
+    - spring cloud
+    - spring data
+    - hibernate
+    - maven
+    - gradle
+    - micrometer
+    - grpc
+    - kafka
+    - junit
+
+  ".net":
+    - csharp
+    - asp.net
+    - entity framework
+    - xunit
+    - nunit
+    - hangfire
+    - serilog
+    - grpc
+
+  golang:
+    - gin
+    - echo
+    - fiber
+    - grpc
+    - protobuf
+    - sqlx
+    - go kit
+    - gorm
+
+  rust:
+    - actix
+    - rocket
+    - tokio
+    - tonic
+    - serde
+
+  devops:
+    - docker
+    - kubernetes
+    - helm
+    - terraform
+    - ansible
+    - packer
+    - jenkins
+    - gitlab ci
+    - github actions
+    - argo cd
+    - prometheus
+    - grafana
+    - loki
+    - jaeger
+    - elastic stack
+    - aws
+    - gcp
+    - azure
+
+  data:
     - postgresql
     - mysql
     - mssql
+    - oracle
     - sqlite
-  1c:
-    - 1c_ut
-    - 1c_zup
-    - 1c_buh
+    - mongodb
+    - cassandra
+    - clickhouse
+    - elasticsearch
+    - kafka
+    - rabbitmq
+    - redis
+    - apache spark
+    - apache hadoop
+    - apache flink
+    - dbt
+    - snowflake
+    - aws redshift
+    - google bigquery
+    - delta-lake
+    - iceberg
+    - apache hudi
+
+  mlops:
+    - mlflow
+    - kubeflow
+    - feast
+    - seldon
+    - bentoml
+    - neptune
+    - dagster
+    - prefect
+    - dvc
+
+  mobile:
+    - android
+    - kotlin
+    - java
+    - swift
+    - ios
+    - objective-c
+    - react native
+    - flutter
+
+  gamedev:
+    - unity
+    - unreal engine
+    - csharp
+    - cpp
+    - godot
+
+skill_families:
+  cicd:
+    - ci
+    - cd
+    - ci cd
+    - github actions
+    - gitlab ci
+    - jenkins
+    - teamcity
+    - circleci
+    - argo cd
+    - bamboo
+
+  queues:
+    - rabbitmq
+    - kafka
+    - aws sqs
+    - nats
+    - activemq
+    - redis streams
+
+  orchestrators:
+    - kubernetes
+    - k8s
+    - helm
+    - docker swarm
+    - nomad
+    - rancher
+    - istio
+    - linkerd
+    - keda
+
+  async:
+    - asyncio
+    - aiohttp
+    - асинхронность
+    - async io
+    - reactive streams
+    - rxjava
+    - rxpy
+
+  highload:
+    - highload
+    - высоконагруженные
+    - performance
+    - нагрузочное тестирование
+    - profiling
+    - latency
+    - throughput
+    - scalability
+
+  observability:
+    - prometheus
+    - grafana
+    - loki
+    - elastic stack
+    - jaeger
+    - open-telemetry
+    - opentracing
+    - zipkin
+    - sentry
+    - datadog
+    - new relic
+
+  bigdata:
+    - apache spark
+    - apache hadoop
+    - apache flink
+    - apache hive
+    - prestodb
+    - trino
+    - hdfs
+
+  ml_core:
+    - pytorch
+    - tensorflow
+    - keras
+    - scikit-learn
+    - xgboost
+    - catboost
+    - lightgbm
+    - mlflow
+    - optuna
+
+  nlp:
+    - transformers
+    - huggingface
+    - bert
+    - gpt
+    - spacy
+    - nltk
+    - stanza
+    - razdel
+    - pymorphy2
+
+  cv:
+    - opencv
+    - detectron2
+    - yolov5
+    - yolo
+    - torchvision
+    - mmcv
+    - mmdetection
+
+  testing:
+    - pytest
+    - unittest
+    - nose
+    - junit
+    - testng
+    - xunit
+    - nunit
+    - selenium
+    - playwright
+    - cypress
+    - jmeter
+    - locust
+
+  clouds:
+    - aws
+    - gcp
+    - azure
+    - yandex cloud
+    - alibaba cloud
 
 domain_similarity:
   retail:
-    - ecommerce
     - marketplace
+    - ecommerce
+    - e-commerce
+    - shop
+    - delivery
+    - ритейл
   fintech:
     - banking
     - payments
-    - ecommerce
+    - credit
+    - investments
+    - страхование
+    - банк
   healthcare:
     - pharma
     - medtech
+    - медицина
+    - фарма
+  logistics:
+    - warehouse
+    - delivery
+    - транспорт
+    - логистика
+  gamedev:
+    - gaming
+    - game
+    - игры
+  edtech:
+    - education
+    - онлайн образование
+  govtech:
+    - госуслуги
+    - government
 
 localization:
   labels:
@@ -142,12 +623,8 @@ localization:
     experience: "Опыт"
     domain: "Доменная область"
     level: "Уровень"
-  messages:
-    missing_skills: "Отсутствуют обязательные навыки"
-    domain_match: "Опыт в нужной доменной области"
-    level_match: "Соответствие уровню вакансии"
 
 skill_match:
   threshold_strict: 0.80
-  threshold_partial: 0.60
+  threshold_partial: 0.55
   require_strict_for_must: true
